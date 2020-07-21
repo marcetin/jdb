@@ -5,19 +5,21 @@ import (
 	"fmt"
 
 	"github.com/ipfs/go-cid"
-	format "github.com/ipfs/go-ipld-format"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/multiformats/go-multiaddr"
 )
 
-func cPeer() (context.Context, *Peer, error) {
+type Driver struct {
+	ctx context.Context
+	p   *Peer
+	db  string
+}
+
+func DataBase(db string) *Driver {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	//log.SetLogLevel("*", "warn")
-	// Bootstrappers are using 1024 keys. See:
-	// https://github.com/ipfs/infra/issues/378
 	crypto.MinRsaKeyBits = 1024
-	ds, err := BadgerDatastore("test")
+	ds, err := BadgerDatastore("datastore")
 	if err != nil {
 		panic(err)
 	}
@@ -42,25 +44,38 @@ func cPeer() (context.Context, *Peer, error) {
 		panic(err)
 	}
 	p.Bootstrap(DefaultBootstrapPeers())
-	return ctx, p, err
+	ib := &Driver{
+		ctx: ctx,
+		p:   p,
+		db:  db,
+	}
+	return ib
 }
 
-func (d *Driver) DataBase() {
-	c, _ := cid.Decode("QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv")
-	node, err := d.p.Get(d.ctx, c)
+func (ib *Driver) Collection() {
+	c, _ := cid.Decode(ib.db)
+	node, err := ib.p.Get(ib.ctx, c)
 	if err != nil {
 		panic(err)
 	}
-	navNode := format.NewNavigableIPLDNode(node, d.p.DAGService)
-	for i := 0; i < int(navNode.ChildTotal()); i++ {
-		childNode, err := navNode.FetchChild(d.ctx, uint(i))
-		if err != nil {
-			panic(err)
-		}
-		n := format.ExtractIPLDNode(childNode)
-		schildCID := n.Cid().String()
-		//childCID := n.Tree("",-1)
-		//fmt.Println("graphOut", childCID)
-		fmt.Println("ssss", schildCID)
+	nnn := node.Links()
+	for _, er := range nnn {
+		fmt.Println("00000000000000000")
+		fmt.Println("Name", er.Name)
+		fmt.Println("Cid", er.Cid)
+		fmt.Println("Size", er.Size)
+		//fmt.Println("terer", er.GetNode())
 	}
+	//navNode := format.NewNavigableIPLDNode(node, ib.p.DAGService)
+	//for i := 0; i < int(navNode.ChildTotal()); i++ {
+	//	childNode, err := navNode.FetchChild(ib.ctx, uint(i))
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	n := format.ExtractIPLDNode(childNode)
+	//	childCID := n.Cid().String()
+	//	//achildCID,_ := n.Stat()
+	//	fmt.Println("graphOut", childCID)
+	//	//fmt.Println("graphOuaaaaaat", achildCID)
+	//}
 }
