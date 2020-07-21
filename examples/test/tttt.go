@@ -1,7 +1,7 @@
 package main
 
 import (
-	db "github.com/marcetin/db"
+	"github.com/marcetin/jdb"
 )
 
 func main() {

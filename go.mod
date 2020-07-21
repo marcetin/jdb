@@ -28,7 +28,6 @@ require (
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-secio v0.2.2
 	github.com/libp2p/go-libp2p-tls v0.1.3
-	github.com/marcetin/db v0.0.0-20200721212301-01124640700e // indirect
 	github.com/multiformats/go-multiaddr v0.2.2
 	github.com/multiformats/go-multihash v0.0.13
 	github.com/w-ingsolutions/c v0.0.0-20200721194217-2cc89f97f4d2
