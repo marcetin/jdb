@@ -693,7 +693,6 @@ github.com/lunixbochs/vtclean v1.0.0/go.mod h1:pHhQNgMf3btfWnGBVipUOjRYhoOsdGqdm
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=
 github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=
-github.com/marcetin/db v0.0.0-20200721090212-c71f6a7e2b1d h1:L7Ev9POcJdxHSvYDmFk3Z0/kKG+7wmGQu8yRaMsiS4c=
 github.com/marten-seemann/qpack v0.1.0/go.mod h1:LFt1NU/Ptjip0C2CPkhimBz5CGE3WGDAUWqna+CNTrI=
 github.com/marten-seemann/qtls v0.9.1 h1:O0YKQxNVPaiFgMng0suWEOY2Sb4LT2sRn9Qimq3Z1IQ=
 github.com/marten-seemann/qtls v0.9.1/go.mod h1:T1MmAdDPyISzxlK6kjRr0pcZFBVd1OZbBb/j3cvzHhk=
