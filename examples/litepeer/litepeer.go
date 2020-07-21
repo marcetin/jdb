@@ -1,8 +1,5 @@
 package main
 
-// This example launches an IPFS-Lite peer and fetches a hello-world
-// hash from the IPFS network.
-
 import (
 	"context"
 	"fmt"
@@ -10,7 +7,7 @@ import (
 
 	"github.com/ipfs/go-cid"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	ipfslite "github.com/marcetin/db"
+	db "github.com/marcetin/db"
 	"github.com/multiformats/go-multiaddr"
 )
 
@@ -22,7 +19,7 @@ func main() {
 	// https://github.com/ipfs/infra/issues/378
 	crypto.MinRsaKeyBits = 1024
 
-	ds, err := ipfslite.BadgerDatastore("test")
+	ds, err := db.BadgerDatastore("test")
 	if err != nil {
 		panic(err)
 	}
@@ -33,25 +30,25 @@ func main() {
 
 	listen, _ := multiaddr.NewMultiaddr("/ip4/0.0.0.0/tcp/4005")
 
-	h, dht, err := ipfslite.SetupLibp2p(
+	h, dht, err := db.SetupLibp2p(
 		ctx,
 		priv,
 		nil,
 		[]multiaddr.Multiaddr{listen},
 		ds,
-		ipfslite.Libp2pOptionsExtra...,
+		db.Libp2pOptionsExtra...,
 	)
 
 	if err != nil {
 		panic(err)
 	}
 
-	lite, err := ipfslite.New(ctx, ds, h, dht, nil)
+	lite, err := db.New(ctx, ds, h, dht, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	lite.Bootstrap(ipfslite.DefaultBootstrapPeers())
+	lite.Bootstrap(db.DefaultBootstrapPeers())
 
 	c, _ := cid.Decode("QmSf6YV2ftaHDgamew2b9CjZ4hu6eDyNfwt7qqFCY2RP3c")
 	rsc, err := lite.GetFile(ctx, c)

@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"context"
@@ -7,24 +7,17 @@ import (
 	"github.com/ipfs/go-cid"
 	format "github.com/ipfs/go-ipld-format"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	ipfslite "github.com/marcetin/db"
 	"github.com/multiformats/go-multiaddr"
 )
 
-type idb struct {
-	ctx context.Context
-	p   *ipfslite.Peer
-	cd  string
-}
-
-func main() {
+func cPeer() (context.Context, *Peer, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	//log.SetLogLevel("*", "warn")
 	// Bootstrappers are using 1024 keys. See:
 	// https://github.com/ipfs/infra/issues/378
 	crypto.MinRsaKeyBits = 1024
-	ds, err := ipfslite.BadgerDatastore("test")
+	ds, err := BadgerDatastore("test")
 	if err != nil {
 		panic(err)
 	}
@@ -33,45 +26,41 @@ func main() {
 		panic(err)
 	}
 	listen, _ := multiaddr.NewMultiaddr("/ip4/0.0.0.0/tcp/4005")
-	h, dht, err := ipfslite.SetupLibp2p(
+	h, dht, err := SetupLibp2p(
 		ctx,
 		priv,
 		nil,
 		[]multiaddr.Multiaddr{listen},
 		ds,
-		ipfslite.Libp2pOptionsExtra...,
+		Libp2pOptionsExtra...,
 	)
 	if err != nil {
 		panic(err)
 	}
-	p, err := ipfslite.New(ctx, ds, h, dht, nil)
+	p, err := newPeer(ctx, ds, h, dht, nil)
 	if err != nil {
 		panic(err)
 	}
-	p.Bootstrap(ipfslite.DefaultBootstrapPeers())
-	ib := &idb{
-		ctx: ctx,
-		p:   p,
-		cd:  "QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv",
-	}
-	ib.collection()
+	p.Bootstrap(DefaultBootstrapPeers())
+	return ctx, p, err
 }
 
-func (ib *idb) collection() {
-	c, _ := cid.Decode(ib.cd)
-	node, err := ib.p.Get(ib.ctx, c)
+func (d *Driver) DataBase() {
+	c, _ := cid.Decode("QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv")
+	node, err := d.p.Get(d.ctx, c)
 	if err != nil {
 		panic(err)
 	}
-	navNode := format.NewNavigableIPLDNode(node, ib.p.DAGService)
+	navNode := format.NewNavigableIPLDNode(node, d.p.DAGService)
 	for i := 0; i < int(navNode.ChildTotal()); i++ {
-		childNode, err := navNode.FetchChild(ib.ctx, uint(i))
+		childNode, err := navNode.FetchChild(d.ctx, uint(i))
 		if err != nil {
 			panic(err)
 		}
 		n := format.ExtractIPLDNode(childNode)
-		//childCID := n.Cid().String()
-		childCID := n.Links()
-		fmt.Println("graphOut", childCID)
+		schildCID := n.Cid().String()
+		//childCID := n.Tree("",-1)
+		//fmt.Println("graphOut", childCID)
+		fmt.Println("ssss", schildCID)
 	}
 }

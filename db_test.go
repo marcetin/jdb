@@ -1,4 +1,4 @@
-package ipfslite
+package db
 
 import (
 	"bytes"

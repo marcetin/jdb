@@ -1,16 +1,9 @@
-// Package ipfslite is a lightweight IPFS peer which runs the minimal setup to
-// provide an `ipld.DAGService`, "Add" and "Get" UnixFS files from IPFS.
-package ipfslite
+package db
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"strings"
-	"sync"
-	"time"
-
 	"github.com/ipfs/go-bitswap"
 	"github.com/ipfs/go-bitswap/network"
 	blockservice "github.com/ipfs/go-blockservice"
@@ -22,9 +15,7 @@ import (
 	provider "github.com/ipfs/go-ipfs-provider"
 	"github.com/ipfs/go-ipfs-provider/queue"
 	"github.com/ipfs/go-ipfs-provider/simple"
-	cbor "github.com/ipfs/go-ipld-cbor"
 	ipld "github.com/ipfs/go-ipld-format"
-	logging "github.com/ipfs/go-log/v2"
 	"github.com/ipfs/go-merkledag"
 	"github.com/ipfs/go-unixfs/importer/balanced"
 	"github.com/ipfs/go-unixfs/importer/helpers"
@@ -34,33 +25,10 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	routing "github.com/libp2p/go-libp2p-core/routing"
 	multihash "github.com/multiformats/go-multihash"
+	"io"
+	"strings"
+	"sync"
 )
-
-func init() {
-	ipld.Register(cid.DagProtobuf, merkledag.DecodeProtobufBlock)
-	ipld.Register(cid.Raw, merkledag.DecodeRawBlock)
-	ipld.Register(cid.DagCBOR, cbor.DecodeBlock) // need to decode CBOR
-}
-
-var logger = logging.Logger("ipfslite")
-
-var (
-	defaultReprovideInterval = 12 * time.Hour
-)
-
-// Config wraps configuration options for the Peer.
-type Config struct {
-	// The DAGService will not announce or retrieve blocks from the network
-	Offline bool
-	// ReprovideInterval sets how often to reprovide records to the DHT
-	ReprovideInterval time.Duration
-}
-
-func (cfg *Config) setDefaults() {
-	if cfg.ReprovideInterval <= 0 {
-		cfg.ReprovideInterval = defaultReprovideInterval
-	}
-}
 
 // Peer is an IPFS-Lite peer. It provides a DAG service that can fetch and put
 // blocks from/to the IPFS network.
@@ -83,7 +51,7 @@ type Peer struct {
 // Routing (usuall the DHT). The Host and the Routing may be nil if
 // config.Offline is set to true, as they are not used in that case. Peer
 // implements the ipld.DAGService interface.
-func New(
+func newPeer(
 	ctx context.Context,
 	store datastore.Batching,
 	host host.Host,
