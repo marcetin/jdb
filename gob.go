@@ -9,15 +9,12 @@ import (
 	"os"
 )
 
-func Write(ctx context.Context, peer *Peer, key interface{}) {
-	var bytesBuf bytes.Buffer
-
-	buf := bytes.NewReader(bytesBuf.Bytes())
+func Write(ctx context.Context, peer *Peer, key []byte) {
+	buf := bytes.NewReader(key)
 	n, err := peer.AddFile(ctx, buf, nil)
 	checkError(err)
-	encoder := gob.NewEncoder(&bytesBuf)
-	err = encoder.Encode(key)
 	fmt.Println("cii:", n.Cid())
+	fmt.Println("cii:", n.Tree("", -1))
 }
 
 func Read(ctx context.Context, peer *Peer, fileName string, key interface{}) {
