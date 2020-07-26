@@ -17,7 +17,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	crypto.MinRsaKeyBits = 1024
-	ds, err := jdb.BadgerDatastore("test")
+	ds, err := jdb.BadgerDatastore("tes33333t")
 	if err != nil {
 		panic(err)
 	}
