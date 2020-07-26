@@ -2,24 +2,23 @@ package jdb
 
 import (
 	"bytes"
-	"context"
 	"encoding/gob"
 	"fmt"
 	"github.com/ipfs/go-cid"
 	"os"
 )
 
-func Write(ctx context.Context, peer *Peer, key []byte) {
+func (j *JavazacDB) Write(key []byte) {
 	buf := bytes.NewReader(key)
-	n, err := peer.AddFile(ctx, buf, nil)
+	n, err := j.peer.AddFile(j.ctx, buf, nil)
 	checkError(err)
 	fmt.Println("cii:", n.Cid())
 	fmt.Println("cii:", n.Tree("", -1))
 }
 
-func Read(ctx context.Context, peer *Peer, fileName string, key interface{}) {
+func (j *JavazacDB) Read(fileName string, key interface{}) {
 	c, _ := cid.Decode(fileName)
-	rsc, err := peer.GetFile(ctx, c)
+	rsc, err := j.peer.GetFile(j.ctx, c)
 	if err != nil {
 		panic(err)
 	}

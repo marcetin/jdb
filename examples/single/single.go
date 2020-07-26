@@ -5,23 +5,22 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/gob"
 	"fmt"
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/marcetin/jdb"
 	"github.com/w-ingsolutions/c/model"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	crypto.MinRsaKeyBits = 1024
-	ds, err := jdb.BadgerDatastore("tes33333t")
-	if err != nil {
-		panic(err)
-	}
-	peer := jdb.GetPeer(ctx, ds)
+	j := jdb.New("tete")
+	//ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
+	//crypto.MinRsaKeyBits = 1024
+	//ds, err := jdb.BadgerDatastore("tes33333t")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//peer := jdb.GetPeer(ctx, ds)
 	//fmt.Println(string(content))
 	var materijal model.WingMaterijal
 
@@ -44,10 +43,12 @@ func main() {
 
 	var bytesBuf bytes.Buffer
 	encoder := gob.NewEncoder(&bytesBuf)
-	err = encoder.Encode(m)
+	err := encoder.Encode(m)
+	if err != nil {
 
-	//jdb.Write(ctx, peer, bytesBuf.Bytes())
+	}
+	j.Write(bytesBuf.Bytes())
 
-	jdb.Read(ctx, peer, "bafybeihs3p4g232wocqd5ouoakrwm5kocjaexpar6oekkn6qzez5nqj3vu", &materijal)
+	j.Read("bafybeihs3p4g232wocqd5ouoakrwm5kocjaexpar6oekkn6qzez5nqj3vu", &materijal)
 	fmt.Println("WingMaterijal", materijal)
 }
