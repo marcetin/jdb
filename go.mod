@@ -3,7 +3,7 @@ module github.com/marcetin/jdb
 go 1.14
 
 require (
-	gioui.org v0.0.0-20200724173311-4a9d97784f24 // indirect
+	github.com/dgraph-io/badger v1.6.1
 	github.com/ipfs/go-bitswap v0.2.19
 	github.com/ipfs/go-blockservice v0.1.3
 	github.com/ipfs/go-cid v0.0.7
@@ -29,5 +29,4 @@ require (
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/multiformats/go-multiaddr v0.2.2
 	github.com/multiformats/go-multihash v0.0.14
-	github.com/w-ingsolutions/c v0.0.0-20200721194217-2cc89f97f4d2
 )

@@ -1,33 +1,33 @@
 package jdb
 
-// This example launches an IPFS-Lite peer and fetches a hello-world
-// hash from the IPFS network.
-
 import (
 	"context"
+	"github.com/dgraph-io/badger"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-// JavazacDb Structure
-type JavazacDB struct {
-	ctx       context.Context
-	peer      *Peer
-	index     map[string]string
-	Datastore string
-}
-
-func New(datastore string) *JavazacDB {
+func Open(options *Options) (*JavazacDB, error) {
+	if err := ValidateKey(options.PrivateKey); err != nil {
+		return nil, err
+	}
+	j := new(JavazacDB)
+	j.encryptKey = options.PrivateKey
+	j.principalNode = options.PrincipalNode
+	j.options = options
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	crypto.MinRsaKeyBits = 1024
-	ds, err := BadgerDatastore(datastore)
+	ds, err := BadgerDatastore("datastore")
 	if err != nil {
 		panic(err)
 	}
-	peer := GetPeer(ctx, ds)
-	return &JavazacDB{
-		ctx:   ctx,
-		peer:  peer,
-		index: make(map[string]string),
+	j.ctx = ctx
+	j.peer = GetPeer(j.ctx, ds)
+	opts := badger.DefaultOptions(options.LocalDBDir).WithLogger(nil)
+	ldb, err := badger.Open(opts)
+	if err != nil {
+		return nil, err
 	}
+	j.localDB = ldb
+	return j, nil
 }

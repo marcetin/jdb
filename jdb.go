@@ -1,5 +1,3 @@
-// Package ipfslite is a lightweight IPFS peer which runs the minimal setup to
-// provide an `ipld.DAGService`, "Add" and "Get" UnixFS files from IPFS.
 package jdb
 
 import (
@@ -10,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgraph-io/badger"
 	"github.com/ipfs/go-cid"
 	blockstore "github.com/ipfs/go-ipfs-blockstore"
 	chunker "github.com/ipfs/go-ipfs-chunker"
@@ -23,6 +22,57 @@ import (
 	ufsio "github.com/ipfs/go-unixfs/io"
 	multihash "github.com/multiformats/go-multihash"
 )
+
+const (
+	// RequiredKeyLength determinate the exact length of the encrypt key
+	RequiredKeyLength = 32
+)
+
+// DB represents a Javazac db  instance,
+// this struct is the real db when it's sync with the ipfs files
+type JavazacDB struct {
+	encryptKey    []byte
+	ctx           context.Context
+	peer          *Peer
+	localDB       *badger.DB
+	options       *Options
+	principalNode string
+	Datastore     string
+}
+
+// Options is the options configuration of JavazacDB
+// TODO: Define better options and a new paradigm to set it
+type Options struct {
+	PrivateKey         []byte
+	EndPointConnection string
+	PrincipalNode      string
+	LocalDBDir         string
+}
+
+// DefaultOptions is used with any options passed,
+// this config saves your db file into your temporal computer files (UNIX)
+// TODO: Improve to another SO
+var DefaultOptions = &Options{
+	LocalDBDir: "/tmp/badger",
+}
+
+// ValidateKey takes a byte slice and checks that minimum requirements are met for
+// the key. It returns an error if the requirements are not met.
+func ValidateKey(k []byte) error {
+	if len(k) == 0 {
+		return errors.New("no PrivateKey set")
+	}
+	if len(k) != RequiredKeyLength {
+		return errors.New("invalid PrivateKey length. Key must be 32 bytes")
+	}
+	return nil
+}
+
+// Close ...
+// TODO
+func (j *JavazacDB) Close() {
+	j.localDB.Close()
+}
 
 func init() {
 	ipld.Register(cid.DagProtobuf, merkledag.DecodeProtobufBlock)
