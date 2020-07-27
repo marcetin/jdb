@@ -12,16 +12,8 @@ import (
 )
 
 func main() {
-	j := jdb.New("tete")
-	//ctx, cancel := context.WithCancel(context.Background())
-	//defer cancel()
-	//crypto.MinRsaKeyBits = 1024
-	//ds, err := jdb.BadgerDatastore("tes33333t")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//peer := jdb.GetPeer(ctx, ds)
-	//fmt.Println(string(content))
+	j := jdb.New("tetwwwe")
+
 	var materijal model.WingMaterijal
 
 	m := model.WingMaterijal{
@@ -47,8 +39,12 @@ func main() {
 	if err != nil {
 
 	}
-	j.Write(bytesBuf.Bytes())
+	j.Write("materijal", bytesBuf.Bytes())
 
 	j.Read("bafybeihs3p4g232wocqd5ouoakrwm5kocjaexpar6oekkn6qzez5nqj3vu", &materijal)
 	fmt.Println("WingMaterijal", materijal)
+
+	index := make(map[string]string)
+	j.Read("bafybeic6orghbaki5dvusxofixdieaxuoc3cpvsjzxjrunkynm7uysb4ze", &index)
+	fmt.Println("index", index)
 }

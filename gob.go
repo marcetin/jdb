@@ -8,12 +8,24 @@ import (
 	"os"
 )
 
-func (j *JavazacDB) Write(key []byte) {
+func (j *JavazacDB) Write(collection string, key []byte) {
 	buf := bytes.NewReader(key)
 	n, err := j.peer.AddFile(j.ctx, buf, nil)
 	checkError(err)
+	j.index[collection] = n.Cid().String()
+
+	var bytesBuf bytes.Buffer
+	encoder := gob.NewEncoder(&bytesBuf)
+	err = encoder.Encode(j.index)
+
+	bufIndex := bytes.NewReader(bytesBuf.Bytes())
+	index, err := j.peer.AddFile(j.ctx, bufIndex, nil)
+	checkError(err)
+
 	fmt.Println("cii:", n.Cid())
+	fmt.Println("cii:", n.String())
 	fmt.Println("cii:", n.Tree("", -1))
+	fmt.Println("cii:", index.Cid())
 }
 
 func (j *JavazacDB) Read(fileName string, key interface{}) {

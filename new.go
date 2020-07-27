@@ -12,6 +12,7 @@ import (
 type JavazacDB struct {
 	ctx       context.Context
 	peer      *Peer
+	index     map[string]string
 	Datastore string
 }
 
@@ -25,7 +26,8 @@ func New(datastore string) *JavazacDB {
 	}
 	peer := GetPeer(ctx, ds)
 	return &JavazacDB{
-		ctx:  ctx,
-		peer: peer,
+		ctx:   ctx,
+		peer:  peer,
+		index: make(map[string]string),
 	}
 }
