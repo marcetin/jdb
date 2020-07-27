@@ -26,6 +26,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("This software is made with Go: ", string(answer))
+	fmt.Println("This software is made with programming language: ", string(answer))
 	// The meaning of life is:  42
 }
