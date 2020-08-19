@@ -2,10 +2,11 @@ package jdb
 
 import (
 	"context"
+	"gioui.org/widget"
+	"github.com/gioapp/cms/pkg/items"
 	"github.com/gioapp/cms/pkg/jdb/cfg"
 	"github.com/gioapp/cms/pkg/jdb/repo"
 	"github.com/ipfs/go-cid"
-	format "github.com/ipfs/go-ipld-format"
 	"os"
 )
 
@@ -42,8 +43,26 @@ func New(ctx context.Context, store string) *JavazacDB {
 	return j
 }
 
-func (j *JavazacDB) ReadList(c cid.Cid) []*format.Link {
+func (j *JavazacDB) ReadList(hash string) (itms items.I) {
+	c, _ := cid.Decode(hash)
 	rsc, err := j.peer.Get(j.ctx, c)
 	checkError(err)
-	return rsc.Links()
+	for _, item := range rsc.Links() {
+		//pss, err := rsc.Stat()
+		//checkError(err)
+		//nonono, err := item.GetNode(j.ctx, j.peer)
+		//checkError(err)
+		//nns, err := nonono.Stat()
+		//checkError(err)
+
+		itms = append(itms, &items.FolderListItem{
+			Name: item.Name,
+			Cid:  item.Cid,
+			Size: item.Size,
+			//Type:  uint8,
+			Btn:   new(widget.Clickable),
+			Check: new(widget.Bool),
+		})
+	}
+	return
 }
