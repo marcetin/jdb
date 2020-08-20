@@ -18,6 +18,7 @@ import (
 
 	"gioui.org/app"
 	_ "gioui.org/app/permission/storage"
+
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"os"
@@ -31,7 +32,7 @@ func main() {
 	// https://github.com/ipfs/infra/issues/378
 	crypto.MinRsaKeyBits = 1024
 
-	ds, err := ipfslite.BadgerDatastore("test")
+	ds, err := ipfslite.BadgerDatastore("./test")
 	if err != nil {
 		panic(err)
 	}
