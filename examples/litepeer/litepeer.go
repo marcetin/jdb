@@ -4,20 +4,12 @@ package main
 // hash from the IPFS network.
 
 import (
-	"context"
+	"gioui.org/app"
+	_ "gioui.org/app/permission/storage"
 	"gioui.org/font/gofont"
 	"gioui.org/op"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
-	"io/ioutil"
-
-	ipfslite "github.com/hsanjuan/ipfs-lite"
-	"github.com/ipfs/go-cid"
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/multiformats/go-multiaddr"
-
-	"gioui.org/app"
-	_ "gioui.org/app/permission/storage"
 
 	"gioui.org/io/system"
 	"gioui.org/layout"
