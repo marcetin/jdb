@@ -6,14 +6,16 @@ import (
 	"github.com/gioapp/cms/pkg/items"
 	"github.com/gioapp/cms/pkg/jdb/cfg"
 	"github.com/gioapp/cms/pkg/jdb/repo"
+	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
+
 	"os"
 )
 
 // JavazacDb Structure
 type JavazacDB struct {
 	ctx   context.Context
-	peer  *Peer
+	peer  *ipfslite.Peer
 	index map[string]string
 	store string
 }
