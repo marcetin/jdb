@@ -25,54 +25,54 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	//ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
 
 	// Bootstrappers are using 1024 keys. See:
 	// https://github.com/ipfs/infra/issues/378
-	crypto.MinRsaKeyBits = 1024
+	//crypto.MinRsaKeyBits = 1024
 
-	ds, err := ipfslite.BadgerDatastore("./test")
-	if err != nil {
-		panic(err)
-	}
-	priv, _, err := crypto.GenerateKeyPair(crypto.RSA, 2048)
-	if err != nil {
-		panic(err)
-	}
+	//ds, err := ipfslite.BadgerDatastore("./test")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//priv, _, err := crypto.GenerateKeyPair(crypto.RSA, 2048)
+	//if err != nil {
+	//	panic(err)
+	//}
 
-	listen, _ := multiaddr.NewMultiaddr("/ip4/0.0.0.0/tcp/4005")
+	//listen, _ := multiaddr.NewMultiaddr("/ip4/0.0.0.0/tcp/4005")
 
-	h, dht, err := ipfslite.SetupLibp2p(
-		ctx,
-		priv,
-		nil,
-		[]multiaddr.Multiaddr{listen},
-		ds,
-		ipfslite.Libp2pOptionsExtra...,
-	)
+	//h, dht, err := ipfslite.SetupLibp2p(
+	//	ctx,
+	//	priv,
+	//	nil,
+	//	[]multiaddr.Multiaddr{listen},
+	//	ds,
+	//	ipfslite.Libp2pOptionsExtra...,
+	//)
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//lite, err := ipfslite.New(ctx, ds, h, dht, nil)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//lite.Bootstrap(ipfslite.DefaultBootstrapPeers())
 
-	if err != nil {
-		panic(err)
-	}
-
-	lite, err := ipfslite.New(ctx, ds, h, dht, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	lite.Bootstrap(ipfslite.DefaultBootstrapPeers())
-
-	c, _ := cid.Decode("QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u")
-	rsc, err := lite.GetFile(ctx, c)
-	if err != nil {
-		panic(err)
-	}
-	defer rsc.Close()
-	content, err := ioutil.ReadAll(rsc)
-	if err != nil {
-		panic(err)
-	}
+	//c, _ := cid.Decode("QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u")
+	//rsc, err := lite.GetFile(ctx, c)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer rsc.Close()
+	//content, err := ioutil.ReadAll(rsc)
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	//fmt.Println(string(content))
 
@@ -93,7 +93,7 @@ func main() {
 				case system.FrameEvent:
 					gtx := layout.NewContext(&ops, e)
 
-					material.H3(th, string(content)).Layout(gtx)
+					material.H3(th, string("mizengija")).Layout(gtx)
 
 					e.Frame(gtx.Ops)
 				}
