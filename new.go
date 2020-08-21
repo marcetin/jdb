@@ -8,6 +8,7 @@ import (
 	"github.com/gioapp/cms/pkg/jdb/repo"
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
+	format "github.com/ipfs/go-ipld-format"
 
 	"os"
 )
@@ -47,9 +48,22 @@ func New(ctx context.Context, store string) *JavazacDB {
 
 func (j *JavazacDB) ReadList(hash string) (itms items.I) {
 	c, _ := cid.Decode(hash)
-	rsc, err := j.peer.Get(j.ctx, c)
+	node, err := j.peer.Get(j.ctx, c)
 	checkError(err)
-	for _, item := range rsc.Links() {
+	navNode := format.NewNavigableIPLDNode(node, lite.DAGService)
+
+	rootNode := node.Cid().String()
+
+	for i := 0; i < int(navNode.ChildTotal()); i++ {
+		childNode, err := navNode.FetchChild(ctx, uint(i))
+		if err != nil {
+			panic(err)
+		}
+		n := format.ExtractIPLDNode(childNode)
+		childCID := n.Cid().String()
+		childNode, err := j.peer.Get(j.ctx, c)
+		checkError(err)
+		//for _, item := range rsc.Links() {
 		//pss, err := rsc.Stat()
 		//checkError(err)
 		//nonono, err := item.GetNode(j.ctx, j.peer)
@@ -58,9 +72,9 @@ func (j *JavazacDB) ReadList(hash string) (itms items.I) {
 		//checkError(err)
 
 		itms = append(itms, &items.FolderListItem{
-			Name: item.Name,
-			Cid:  item.Cid,
-			Size: item.Size,
+			Name: childNode.Name,
+			Cid:  childNode.Cid,
+			Size: childNode.Size,
 			//Type:  uint8,
 			Btn:   new(widget.Clickable),
 			Check: new(widget.Bool),
